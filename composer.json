@@ -1,11 +1,11 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "pedrohenrique/conectasus-pacientes",
+    "name": "pedrohenrique/integraubs-pacientes",
     "type": "project",
-    "description": "Desafio ConectaSUS: cadastro de pacientes vinculados a unidades de saúde (Laravel + JavaScript puro).",
+    "description": "IntegraUBS: cadastro de pacientes vinculados a unidades de saúde (Laravel + JavaScript puro).",
     "keywords": [
         "laravel",
-        "conectasus",
+        "integraubs",
         "desafio"
     ],
     "license": "MIT",
