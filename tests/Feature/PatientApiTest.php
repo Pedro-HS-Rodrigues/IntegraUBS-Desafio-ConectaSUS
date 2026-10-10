@@ -112,3 +112,27 @@ it('returns an empty list when no name matches the search', function () {
     $response->assertOk()
         ->assertJsonCount(0, 'data');
 });
+
+it('rejects a cpf with invalid check digits', function () {
+    $response = $this->postJson('/api/patients', patientPayload([
+        'cpf' => '529.982.247-24',
+    ]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('cpf')
+        ->assertJsonPath('errors.cpf.0', __('validation.cpf'));
+
+    $this->assertDatabaseCount('patients', 0);
+});
+
+it('rejects a cpf with invalid check digits when updating', function () {
+    $patient = Patient::factory()->create();
+
+    $response = $this->putJson("/api/patients/{$patient->id}", patientPayload([
+        'cpf' => '11111111111',
+        'health_unit_id' => $patient->health_unit_id,
+    ]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('cpf');
+});
