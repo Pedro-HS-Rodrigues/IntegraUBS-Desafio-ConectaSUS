@@ -1,13 +1,11 @@
 import { request } from './http.js';
 
-export function listPatients(search) {
-    const params = new URLSearchParams();
+export function listPatients(search, page) {
+    const params = new URLSearchParams({ page });
 
     if (search) {
         params.set('search', search);
     }
 
-    const query = params.toString();
-
-    return request('GET', query ? `/api/patients?${query}` : '/api/patients');
+    return request('GET', `/api/patients?${params}`);
 }

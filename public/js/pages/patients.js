@@ -1,10 +1,12 @@
 import { onRetry, showListState } from '../components/listState.js';
+import { disablePagination, initPagination, renderPagination } from '../components/pagination.js';
 import { renderPatients } from '../components/patientTable.js';
 import { initSearchBar } from '../components/searchBar.js';
 import { listPatients } from '../services/patientService.js';
 
 const state = {
     search: '',
+    page: 1,
     requestId: 0,
 };
 
@@ -12,15 +14,23 @@ async function loadPatients() {
     const requestId = ++state.requestId;
 
     showListState('loading');
+    disablePagination();
 
     try {
-        const response = await listPatients(state.search);
+        const response = await listPatients(state.search, state.page);
 
         if (requestId !== state.requestId) {
             return;
         }
 
+        if (response.data.length === 0 && response.meta.current_page > response.meta.last_page) {
+            state.page = response.meta.last_page;
+            loadPatients();
+            return;
+        }
+
         renderPatients(response.data);
+        renderPagination(response.meta, response.links);
         showListState(response.data.length === 0 ? 'empty' : 'data');
     } catch {
         if (requestId === state.requestId) {
@@ -32,8 +42,20 @@ async function loadPatients() {
 export function init() {
     initSearchBar((search) => {
         state.search = search;
+        state.page = 1;
         loadPatients();
     });
+
+    initPagination(
+        () => {
+            state.page--;
+            loadPatients();
+        },
+        () => {
+            state.page++;
+            loadPatients();
+        },
+    );
 
     onRetry(loadPatients);
     loadPatients();
