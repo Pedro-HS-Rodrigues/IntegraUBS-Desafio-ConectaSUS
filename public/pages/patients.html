@@ -145,6 +145,16 @@
     </form>
   </dialog>
 
+  <dialog id="deleteDialog" class="app-dialog confirm-dialog" aria-labelledby="deleteDialogTitle">
+    <h2 id="deleteDialogTitle" class="dialog-title">Excluir paciente</h2>
+    <p class="dialog-text">Deseja realmente excluir o paciente <strong id="deleteName" class="dialog-name"></strong>?</p>
+    <p class="dialog-note">Esta ação não pode ser desfeita.</p>
+    <div class="dialog-actions">
+      <button type="button" id="cancelDeleteButton" class="btn btn-outline-secondary">Cancelar</button>
+      <button type="button" id="confirmDeleteButton" class="btn btn-danger">Excluir</button>
+    </div>
+  </dialog>
+
   <template id="patientRowTemplate">
     <tr>
       <td class="cell-name" data-label="Nome"></td>

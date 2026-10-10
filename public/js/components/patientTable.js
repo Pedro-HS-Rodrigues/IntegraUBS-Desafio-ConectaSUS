@@ -3,13 +3,22 @@ import { formatCpf, formatDate, formatPhone } from '../utils/formatters.js';
 const tableBody = document.getElementById('patientTableBody');
 const rowTemplate = document.getElementById('patientRowTemplate');
 
-export function initPatientTable(onEdit) {
+export function initPatientTable(onEdit, onDelete) {
     tableBody.addEventListener('click', (event) => {
-        const editButton = event.target.closest('.edit-button');
+        const button = event.target.closest('.edit-button, .delete-button');
 
-        if (editButton) {
-            onEdit(Number(editButton.closest('tr').dataset.id));
+        if (!button) {
+            return;
         }
+
+        const id = Number(button.closest('tr').dataset.id);
+
+        if (button.classList.contains('edit-button')) {
+            onEdit(id);
+            return;
+        }
+
+        onDelete(id);
     });
 }
 

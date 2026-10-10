@@ -1,3 +1,4 @@
+import { initDeleteDialog } from '../components/deleteDialog.js';
 import { onRetry } from '../components/listState.js';
 import { initMessageBanner, showMessage } from '../components/messageBanner.js';
 import { initPagination } from '../components/pagination.js';
@@ -5,7 +6,7 @@ import { fillHealthUnits, initPatientForm, openPatientForm } from '../components
 import { initPatientTable } from '../components/patientTable.js';
 import { initSearchBar } from '../components/searchBar.js';
 import { listHealthUnits } from '../services/healthUnitService.js';
-import { savePatient } from './patients/actions.js';
+import { confirmPatientDeletion, requestPatientDeletion, savePatient } from './patients/actions.js';
 import { getPatient, goToNextPage, goToPreviousPage, loadPatients, searchPatients } from './patients/list.js';
 
 async function loadHealthUnits() {
@@ -21,8 +22,9 @@ export function init() {
     initMessageBanner();
     initSearchBar(searchPatients);
     initPagination(goToPreviousPage, goToNextPage);
-    initPatientTable((id) => openPatientForm(getPatient(id)));
+    initPatientTable((id) => openPatientForm(getPatient(id)), requestPatientDeletion);
     initPatientForm(savePatient);
+    initDeleteDialog(confirmPatientDeletion);
     onRetry(loadPatients);
 
     loadHealthUnits();

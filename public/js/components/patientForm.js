@@ -33,6 +33,14 @@ export function initPatientForm(onSubmit) {
     Object.values(fields).forEach(({ input, error }) => {
         input.addEventListener('input', () => clearFieldError(input, error));
     });
+
+    fields.cpf.input.addEventListener('input', () => {
+        fields.cpf.input.value = formatCpf(fields.cpf.input.value);
+    });
+
+    fields.phone.input.addEventListener('input', () => {
+        fields.phone.input.value = formatPhone(fields.phone.input.value);
+    });
 }
 
 export function fillHealthUnits(units) {

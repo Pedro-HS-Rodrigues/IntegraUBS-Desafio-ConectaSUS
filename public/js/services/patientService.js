@@ -17,3 +17,7 @@ export function createPatient(data) {
 export function updatePatient(id, data) {
     return request('PUT', `/api/patients/${id}`, data);
 }
+
+export function deletePatient(id) {
+    return request('DELETE', `/api/patients/${id}`);
+}
