@@ -90,3 +90,25 @@ it('updates a patient keeping the same cpf', function () {
         'cpf' => '52998224725',
     ]);
 });
+
+it('finds patients by partial name', function () {
+    Patient::factory()->create(['name' => 'Maria Silva']);
+    Patient::factory()->create(['name' => 'Mariana Costa']);
+    Patient::factory()->create(['name' => 'João Pereira']);
+
+    $response = $this->getJson('/api/patients?search=Mari');
+
+    $response->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('data.0.name', 'Maria Silva')
+        ->assertJsonPath('data.1.name', 'Mariana Costa');
+});
+
+it('returns an empty list when no name matches the search', function () {
+    Patient::factory()->create(['name' => 'Maria Silva']);
+
+    $response = $this->getJson('/api/patients?search=Zzz');
+
+    $response->assertOk()
+        ->assertJsonCount(0, 'data');
+});
