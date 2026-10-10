@@ -11,7 +11,7 @@ class PatientFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'cpf' => fake()->unique()->numerify('###########'),
+            'cpf' => fake()->unique()->cpf(false),
             'birth_date' => fake()->dateTimeBetween('-90 years', '-1 year')->format('Y-m-d'),
             'phone' => fake()->numerify('859########'),
             'health_unit_id' => HealthUnit::factory(),

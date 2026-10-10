@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Cpf;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +26,7 @@ class UpdatePatientRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'cpf' => ['required', 'digits:11', Rule::unique('patients', 'cpf')->ignore($this->route('patient'))],
+            'cpf' => ['bail', 'required', 'digits:11', new Cpf, Rule::unique('patients', 'cpf')->ignore($this->route('patient'))],
             'birth_date' => ['required', 'date', 'before_or_equal:today'],
             'phone' => ['nullable', 'string', 'max:20'],
             'health_unit_id' => ['required', 'integer', 'exists:health_units,id'],
