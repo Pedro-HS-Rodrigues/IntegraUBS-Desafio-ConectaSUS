@@ -1,0 +1,57 @@
+.app-header-inner,
+.app-main {
+  max-width: 1240px;
+}
+
+.app-main {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+@media (max-width: 767.98px) {
+  .app-main {
+    padding-top: var(--space-4);
+  }
+}
+
+.app-header {
+  background: var(--color-surface);
+  border-bottom: 3px solid var(--color-accent);
+  box-shadow: var(--shadow-panel);
+  color: var(--color-header);
+  padding: var(--space-5) 0;
+}
+
+.app-header-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.app-title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.app-subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
