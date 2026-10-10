@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS conectasus
+CREATE DATABASE IF NOT EXISTS integraubs
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE conectasus;
+USE integraubs;
 
 CREATE TABLE health_units (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
