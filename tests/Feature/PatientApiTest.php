@@ -53,3 +53,40 @@ it('rejects a future birth date', function () {
 
     $this->assertDatabaseCount('patients', 0);
 });
+
+it('rejects a health unit that does not exist', function () {
+    $response = $this->postJson('/api/patients', patientPayload([
+        'health_unit_id' => 9999,
+    ]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('health_unit_id');
+
+    $this->assertDatabaseCount('patients', 0);
+});
+
+it('returns 404 when the patient does not exist', function () {
+    $response = $this->getJson('/api/patients/9999');
+
+    $response->assertNotFound()
+        ->assertJsonPath('message', __('patients.not_found'));
+});
+
+it('updates a patient keeping the same cpf', function () {
+    $patient = Patient::factory()->create(['cpf' => '52998224725']);
+
+    $response = $this->putJson("/api/patients/{$patient->id}", patientPayload([
+        'name' => 'Nome Atualizado',
+        'health_unit_id' => $patient->health_unit_id,
+    ]));
+
+    $response->assertOk()
+        ->assertJsonPath('data.name', 'Nome Atualizado')
+        ->assertJsonPath('message', __('patients.updated'));
+
+    $this->assertDatabaseHas('patients', [
+        'id' => $patient->id,
+        'name' => 'Nome Atualizado',
+        'cpf' => '52998224725',
+    ]);
+});
