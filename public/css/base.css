@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("../assets/vendor/fonts/public-sans-latin.woff2") format("woff2");
+}
+
 :root {
   --color-primary: #0a72c0;
   --color-primary-dark: #075a99;

@@ -10,7 +10,7 @@ class PatientService
     public function list(?string $search): LengthAwarePaginator
     {
         return Patient::with('healthUnit')
-            ->when($search, fn ($query) => $query->where('name', 'like', "%{$search}%"))
+            ->when($search, fn ($query) => $query->whereRaw("name like ? escape '!'", ['%'.$this->escapeLike($search).'%']))
             ->orderBy('name')
             ->paginate(10)
             ->withQueryString();
@@ -33,5 +33,10 @@ class PatientService
     public function delete(Patient $patient): void
     {
         $patient->delete();
+    }
+
+    private function escapeLike(string $value): string
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
     }
 }
