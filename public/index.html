@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IntegraUBS</title>
+  <title>IntegraUBS · Pacientes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,24 +11,164 @@
   <link href="css/base.css" rel="stylesheet">
   <link href="css/layout.css" rel="stylesheet">
   <link href="css/components.css" rel="stylesheet">
+  <link href="css/pages/patients.css" rel="stylesheet">
 </head>
-<body>
+<body data-page="patients">
   <header class="app-header">
     <div class="container app-header-inner">
-      <span class="app-logo" aria-hidden="true">+</span>
-      <div>
-        <h1 class="app-title">IntegraUBS</h1>
-        <p class="app-subtitle">Gerenciamento e integração de pacientes por Unidade Básica de Saúde</p>
-      </div>
+      <h1 class="app-brand">
+        <img src="assets/images/integraubs-logo.svg" alt="IntegraUBS" class="app-logo-image">
+      </h1>
+      <p class="app-subtitle">Gerenciamento e integração de pacientes por Unidade Básica de Saúde</p>
     </div>
   </header>
 
   <main class="container app-main">
-    <section class="panel" aria-labelledby="homeTitle">
-      <h2 id="homeTitle" class="panel-title">Cadastro de pacientes</h2>
-      <p class="panel-hint">Cadastre, consulte, edite e exclua pacientes vinculados às unidades de saúde.</p>
-      <a href="pages/patients.html" class="btn btn-primary mt-4">Acessar pacientes</a>
+    <div id="messageBanner" class="alert alert-success message-banner" role="status" aria-live="polite" data-fallback="Não foi possível concluir a operação. Tente novamente." hidden>
+      <span id="messageText" class="message-text"></span>
+      <button type="button" id="messageClose" class="message-close" aria-label="Fechar mensagem">&times;</button>
+    </div>
+
+    <section class="panel list-panel" aria-labelledby="listTitle">
+      <div class="list-header">
+        <h2 id="listTitle" class="panel-title">Pacientes</h2>
+        <div class="list-tools">
+          <div class="search-bar">
+            <label for="searchInput" class="sr-only">Buscar paciente por nome</label>
+            <span class="search-icon" aria-hidden="true"></span>
+            <input type="search" id="searchInput" class="search-input" placeholder="Buscar por nome" autocomplete="off">
+            <button type="button" id="searchClear" class="search-clear" aria-label="Limpar busca" hidden>&times;</button>
+          </div>
+          <button type="button" id="newPatientButton" class="btn btn-primary new-patient-button">+ Novo paciente</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="patient-table">
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">CPF</th>
+              <th scope="col">Data de nascimento</th>
+              <th scope="col">Telefone</th>
+              <th scope="col">Unidade</th>
+              <th scope="col" class="actions-header">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="patientTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="loadingState" class="list-state" hidden>
+        <div class="skeleton-list" aria-hidden="true">
+          <span class="skeleton-row"></span>
+          <span class="skeleton-row"></span>
+          <span class="skeleton-row"></span>
+          <span class="skeleton-row"></span>
+        </div>
+        <p class="state-text" role="status">Carregando pacientes...</p>
+      </div>
+
+      <div id="emptyState" class="list-state" hidden>
+        <span class="state-icon" aria-hidden="true">?</span>
+        <p class="state-title">Nenhum paciente encontrado</p>
+        <p class="state-text">Tente buscar por outro nome ou cadastre um novo paciente.</p>
+      </div>
+
+      <div id="errorState" class="list-state list-state-error" hidden>
+        <span class="state-icon" aria-hidden="true">!</span>
+        <p class="state-title">Não foi possível carregar os pacientes</p>
+        <p class="state-text">Verifique sua conexão e tente de novo.</p>
+        <button type="button" id="retryButton" class="btn btn-outline-primary retry-button">Tentar novamente</button>
+      </div>
+
+      <nav class="pagination-bar" aria-label="Paginação da lista de pacientes">
+        <p id="totalInfo" class="pagination-total" data-singular="paciente" data-plural="pacientes"></p>
+        <div class="pagination-controls">
+          <button type="button" id="previousButton" class="page-button" disabled>Anterior</button>
+          <span id="pageInfo" class="page-info" aria-live="polite" data-page-label="Página" data-of-label="de"></span>
+          <button type="button" id="nextButton" class="page-button" disabled>Próxima</button>
+        </div>
+      </nav>
     </section>
   </main>
+
+  <dialog id="patientDialog" class="app-dialog form-dialog" aria-labelledby="formTitle">
+    <div class="dialog-header">
+      <div>
+        <h2 id="formTitle" class="dialog-title" data-title-create="Novo paciente" data-title-edit="Editar paciente"></h2>
+        <p class="panel-hint">Campos com <span class="required-mark" aria-hidden="true">*</span> são obrigatórios.</p>
+      </div>
+      <button type="button" id="closeFormButton" class="dialog-close" aria-label="Fechar formulário">&times;</button>
+    </div>
+
+    <form id="patientForm" class="patient-form" novalidate>
+      <input type="hidden" id="patientId" name="id" value="">
+
+      <div class="form-field">
+        <label for="name" class="field-label">Nome <span class="required-mark" aria-hidden="true">*</span></label>
+        <input type="text" id="name" name="name" class="field-input" maxlength="255" required autocomplete="name" aria-describedby="nameError">
+        <small id="nameError" class="field-error"></small>
+      </div>
+
+      <div class="form-field">
+        <label for="cpf" class="field-label">CPF <span class="required-mark" aria-hidden="true">*</span></label>
+        <input type="text" id="cpf" name="cpf" class="field-input" placeholder="000.000.000-00" inputmode="numeric" maxlength="14" required aria-describedby="cpfError">
+        <small id="cpfError" class="field-error"></small>
+      </div>
+
+      <div class="form-field">
+        <label for="birthDate" class="field-label">Data de nascimento <span class="required-mark" aria-hidden="true">*</span></label>
+        <input type="date" id="birthDate" name="birth_date" class="field-input" required aria-describedby="birthDateError">
+        <small id="birthDateError" class="field-error"></small>
+      </div>
+
+      <div class="form-field">
+        <label for="phone" class="field-label">Telefone <span class="field-optional">(opcional)</span></label>
+        <input type="text" id="phone" name="phone" class="field-input" placeholder="(00) 00000-0000" inputmode="tel" maxlength="15" autocomplete="tel" aria-describedby="phoneError">
+        <small id="phoneError" class="field-error"></small>
+      </div>
+
+      <div class="form-field">
+        <label for="healthUnit" class="field-label">Unidade de saúde <span class="required-mark" aria-hidden="true">*</span></label>
+        <select id="healthUnit" name="health_unit_id" class="field-input field-select" required aria-describedby="healthUnitError">
+          <option value="">Selecione uma unidade</option>
+        </select>
+        <small id="healthUnitError" class="field-error"></small>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" id="submitButton" class="btn btn-primary" data-label-create="Salvar" data-label-edit="Atualizar" data-label-saving="Salvando..."></button>
+        <button type="button" id="cancelButton" class="btn btn-outline-secondary" hidden>Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="deleteDialog" class="app-dialog confirm-dialog" aria-labelledby="deleteDialogTitle">
+    <h2 id="deleteDialogTitle" class="dialog-title">Excluir paciente</h2>
+    <p class="dialog-text">Deseja realmente excluir o paciente <strong id="deleteName" class="dialog-name"></strong>?</p>
+    <p class="dialog-note">Esta ação não pode ser desfeita.</p>
+    <div class="dialog-actions">
+      <button type="button" id="cancelDeleteButton" class="btn btn-outline-secondary">Cancelar</button>
+      <button type="button" id="confirmDeleteButton" class="btn btn-danger">Excluir</button>
+    </div>
+  </dialog>
+
+  <template id="patientRowTemplate">
+    <tr>
+      <td class="cell-name" data-label="Nome"></td>
+      <td class="cell-cpf" data-label="CPF"></td>
+      <td class="cell-birth-date" data-label="Nascimento"></td>
+      <td class="cell-phone" data-label="Telefone" data-empty-text="Não informado"></td>
+      <td class="cell-unit" data-label="Unidade"></td>
+      <td class="cell-actions">
+        <div class="row-actions">
+          <button type="button" class="action-button edit-button">Editar</button>
+          <button type="button" class="action-button delete-button">Excluir</button>
+        </div>
+      </td>
+    </tr>
+  </template>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
