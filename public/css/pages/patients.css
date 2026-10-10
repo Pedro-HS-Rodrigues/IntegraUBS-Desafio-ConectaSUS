@@ -1,0 +1,247 @@
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.list-tools {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 0 1 34rem;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.new-patient-button {
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .list-tools {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+  }
+
+  .new-patient-button {
+    flex: 1 1 100%;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.patient-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.patient-table th {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-soft);
+  color: var(--color-header);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.patient-table td {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.patient-table tbody tr {
+  transition: background-color 0.15s;
+}
+
+.patient-table tbody tr:hover {
+  background: var(--color-row-hover);
+}
+
+.cell-name {
+  font-weight: 600;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.cell-cpf,
+.cell-birth-date,
+.cell-phone {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cell-empty {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.actions-header {
+  text-align: right !important;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 991.98px) {
+  .table-wrapper {
+    border: 0;
+    overflow: visible;
+  }
+
+  .patient-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .patient-table,
+  .patient-table tbody,
+  .patient-table tr,
+  .patient-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .patient-table tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-3);
+  }
+
+  .patient-table tbody tr {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .patient-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+    border-top: 0;
+    text-align: right;
+  }
+
+  .patient-table td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--color-muted);
+    font-weight: 500;
+    text-align: left;
+  }
+
+  .patient-table .cell-name {
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-1);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--font-size-base);
+    text-align: left;
+  }
+
+  .patient-table .cell-name::before {
+    display: none;
+  }
+
+  .patient-table .cell-actions {
+    padding-top: var(--space-3);
+  }
+
+  .row-actions {
+    width: 100%;
+  }
+
+  .action-button {
+    flex: 1;
+    min-height: 2.75rem;
+  }
+}
+
+.form-dialog {
+  width: min(34rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+}
+
+.patient-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.form-actions .btn {
+  flex: 1 1 8rem;
+}
+
+.form-dialog .form-actions {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+.form-dialog .form-actions .btn {
+  flex: 0 0 auto;
+  min-width: 8rem;
+}
+
+@media (max-width: 767.98px) {
+  .form-dialog .form-actions .btn {
+    flex: 1;
+  }
+}
+
+.confirm-dialog {
+  width: min(28rem, calc(100% - 2rem));
+}
+
+.dialog-text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dialog-name {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.dialog-note {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 767.98px) {
+  .dialog-actions .btn {
+    flex: 1;
+  }
+}
