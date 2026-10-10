@@ -9,3 +9,11 @@ export function listPatients(search, page) {
 
     return request('GET', `/api/patients?${params}`);
 }
+
+export function createPatient(data) {
+    return request('POST', '/api/patients', data);
+}
+
+export function updatePatient(id, data) {
+    return request('PUT', `/api/patients/${id}`, data);
+}

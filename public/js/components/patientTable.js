@@ -3,6 +3,20 @@ import { formatCpf, formatDate, formatPhone } from '../utils/formatters.js';
 const tableBody = document.getElementById('patientTableBody');
 const rowTemplate = document.getElementById('patientRowTemplate');
 
+export function initPatientTable(onEdit) {
+    tableBody.addEventListener('click', (event) => {
+        const editButton = event.target.closest('.edit-button');
+
+        if (editButton) {
+            onEdit(Number(editButton.closest('tr').dataset.id));
+        }
+    });
+}
+
+export function renderPatients(patients) {
+    tableBody.replaceChildren(...patients.map(buildRow));
+}
+
 function fillPhoneCell(cell, phone) {
     if (phone) {
         cell.textContent = formatPhone(phone);
@@ -26,8 +40,4 @@ function buildRow(patient) {
     fillPhoneCell(row.querySelector('.cell-phone'), patient.phone);
 
     return row;
-}
-
-export function renderPatients(patients) {
-    tableBody.replaceChildren(...patients.map(buildRow));
 }

@@ -1,62 +1,30 @@
-import { onRetry, showListState } from '../components/listState.js';
-import { disablePagination, initPagination, renderPagination } from '../components/pagination.js';
-import { renderPatients } from '../components/patientTable.js';
+import { onRetry } from '../components/listState.js';
+import { initMessageBanner, showMessage } from '../components/messageBanner.js';
+import { initPagination } from '../components/pagination.js';
+import { fillHealthUnits, initPatientForm, openPatientForm } from '../components/patientForm.js';
+import { initPatientTable } from '../components/patientTable.js';
 import { initSearchBar } from '../components/searchBar.js';
-import { listPatients } from '../services/patientService.js';
+import { listHealthUnits } from '../services/healthUnitService.js';
+import { savePatient } from './patients/actions.js';
+import { getPatient, goToNextPage, goToPreviousPage, loadPatients, searchPatients } from './patients/list.js';
 
-const state = {
-    search: '',
-    page: 1,
-    requestId: 0,
-};
-
-async function loadPatients() {
-    const requestId = ++state.requestId;
-
-    showListState('loading');
-    disablePagination();
-
+async function loadHealthUnits() {
     try {
-        const response = await listPatients(state.search, state.page);
-
-        if (requestId !== state.requestId) {
-            return;
-        }
-
-        if (response.data.length === 0 && response.meta.current_page > response.meta.last_page) {
-            state.page = response.meta.last_page;
-            loadPatients();
-            return;
-        }
-
-        renderPatients(response.data);
-        renderPagination(response.meta, response.links);
-        showListState(response.data.length === 0 ? 'empty' : 'data');
-    } catch {
-        if (requestId === state.requestId) {
-            showListState('error');
-        }
+        const response = await listHealthUnits();
+        fillHealthUnits(response.data);
+    } catch (error) {
+        showMessage('error', error.message);
     }
 }
 
 export function init() {
-    initSearchBar((search) => {
-        state.search = search;
-        state.page = 1;
-        loadPatients();
-    });
-
-    initPagination(
-        () => {
-            state.page--;
-            loadPatients();
-        },
-        () => {
-            state.page++;
-            loadPatients();
-        },
-    );
-
+    initMessageBanner();
+    initSearchBar(searchPatients);
+    initPagination(goToPreviousPage, goToNextPage);
+    initPatientTable((id) => openPatientForm(getPatient(id)));
+    initPatientForm(savePatient);
     onRetry(loadPatients);
+
+    loadHealthUnits();
     loadPatients();
 }

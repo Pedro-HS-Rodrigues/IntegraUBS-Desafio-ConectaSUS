@@ -11,15 +11,27 @@ export async function request(method, url, body = null) {
         options.body = JSON.stringify(body);
     }
 
-    const response = await fetch(url, options);
+    let response;
+
+    try {
+        response = await fetch(url, options);
+    } catch {
+        throw buildError(0, '', {});
+    }
+
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        const error = new Error(data.message ?? '');
-        error.status = response.status;
-        error.errors = data.errors ?? {};
-        throw error;
+        throw buildError(response.status, data.message ?? '', data.errors ?? {});
     }
 
     return data;
+}
+
+function buildError(status, message, errors) {
+    const error = new Error(message);
+    error.status = status;
+    error.errors = errors;
+
+    return error;
 }
