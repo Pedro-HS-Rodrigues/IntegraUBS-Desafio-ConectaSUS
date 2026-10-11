@@ -7,7 +7,7 @@ return [
     'date' => 'O campo :attribute deve ser uma data válida.',
     'digits' => 'O campo :attribute deve ter :digits dígitos.',
     'digits_between' => 'O campo :attribute deve ter entre :min e :max dígitos.',
-    'cpf' => 'O CPF informado é inválido.',
+    'not_regex' => 'O campo :attribute contém caracteres inválidos.',
     'exists' => 'O valor informado para :attribute é inválido.',
     'unique' => 'O valor informado para :attribute já está em uso.',
     'before_or_equal' => 'O campo :attribute não pode ser uma data futura.',
