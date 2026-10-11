@@ -18,7 +18,9 @@ class PatientController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $patients = $this->patientService->list($request->query('search'));
+        $validated = $request->validate(['search' => ['nullable', 'string']]);
+
+        $patients = $this->patientService->list($validated['search'] ?? null);
 
         return PatientResource::collection($patients);
     }

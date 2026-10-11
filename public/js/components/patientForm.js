@@ -26,6 +26,11 @@ export function initPatientForm(onSubmit) {
 
     patientForm.addEventListener('submit', (event) => {
         event.preventDefault();
+
+        if (submitButton.disabled) {
+            return;
+        }
+
         clearFieldErrors();
         onSubmit(patientId.value, getFormData());
     });

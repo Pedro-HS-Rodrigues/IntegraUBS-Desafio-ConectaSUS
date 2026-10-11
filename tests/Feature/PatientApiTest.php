@@ -72,6 +72,18 @@ it('returns 404 when the patient does not exist', function () {
         ->assertJsonPath('message', __('patients.not_found'));
 });
 
+it('returns a generic 404 message when the api route does not exist', function () {
+    $this->getJson('/api/unknown')
+        ->assertNotFound()
+        ->assertJsonPath('message', __('patients.route_not_found'));
+});
+
+it('translates the validation summary to portuguese', function () {
+    $this->postJson('/api/patients', [])
+        ->assertUnprocessable()
+        ->assertJsonPath('message', 'O campo nome é obrigatório. (e mais 3 erros)');
+});
+
 it('updates a patient keeping the same cpf', function () {
     $patient = Patient::factory()->create(['cpf' => '52998224725']);
 
