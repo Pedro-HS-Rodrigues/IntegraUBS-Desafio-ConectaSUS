@@ -10,9 +10,9 @@ function patientPayload(array $overrides = []): array
 {
     return array_merge([
         'name' => 'João Pereira',
-        'cpf' => '529.982.247-25',
+        'cpf' => '52998224725',
         'birth_date' => '1990-05-20',
-        'phone' => '(85) 98888-7777',
+        'phone' => '85988887777',
         'health_unit_id' => HealthUnit::factory()->create()->id,
     ], $overrides);
 }
@@ -127,7 +127,7 @@ it('returns an empty list when no name matches the search', function () {
 
 it('rejects a cpf with invalid check digits', function () {
     $response = $this->postJson('/api/patients', patientPayload([
-        'cpf' => '529.982.247-24',
+        'cpf' => '52998224724',
     ]));
 
     $response->assertUnprocessable()
@@ -179,7 +179,7 @@ it('rejects the cpf of another patient when updating', function () {
     $patient = Patient::factory()->create(['cpf' => '11144477735']);
 
     $response = $this->putJson("/api/patients/{$patient->id}", patientPayload([
-        'cpf' => '529.982.247-25',
+        'cpf' => '52998224725',
         'health_unit_id' => $patient->health_unit_id,
     ]));
 
@@ -231,4 +231,57 @@ it('lists the patients ordered by name', function () {
         ->assertJsonPath('data.0.name', 'Ana')
         ->assertJsonPath('data.1.name', 'Bruno')
         ->assertJsonPath('data.2.name', 'Carla');
+});
+
+it('rejects a cpf with mask or letters', function (string $cpf) {
+    $response = $this->postJson('/api/patients', patientPayload(['cpf' => $cpf]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('cpf')
+        ->assertJsonPath('errors.cpf.0', __('validation.digits', ['attribute' => 'CPF', 'digits' => 11]));
+
+    $this->assertDatabaseCount('patients', 0);
+})->with([
+    'with mask' => '529.982.247-25',
+    'only letters' => 'abcdefghijk',
+]);
+
+it('partially updates a patient with patch', function () {
+    $patient = Patient::factory()->create(['name' => 'Nome Antigo', 'cpf' => '52998224725']);
+
+    $response = $this->patchJson("/api/patients/{$patient->id}", ['name' => 'Nome Novo']);
+
+    $response->assertOk()
+        ->assertJsonPath('data.name', 'Nome Novo')
+        ->assertJsonPath('data.cpf', '52998224725');
+
+    $this->assertDatabaseHas('patients', ['id' => $patient->id, 'name' => 'Nome Novo', 'cpf' => '52998224725']);
+});
+
+it('still validates the fields sent in a patch', function () {
+    $patient = Patient::factory()->create();
+
+    $this->patchJson("/api/patients/{$patient->id}", ['name' => ''])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('name');
+});
+
+it('rejects a phone with mask, letters or wrong size', function (string $phone) {
+    $response = $this->postJson('/api/patients', patientPayload(['phone' => $phone]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('phone');
+
+    $this->assertDatabaseCount('patients', 0);
+})->with([
+    'with mask' => '(85) 98888-7777',
+    'only letters' => 'abcdefghij',
+    'too short' => '859888',
+    'too long' => '859888877771',
+]);
+
+it('accepts a patient without phone', function () {
+    $this->postJson('/api/patients', patientPayload(['phone' => null]))
+        ->assertCreated()
+        ->assertJsonPath('data.phone', null);
 });
