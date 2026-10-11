@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\HealthUnit;
 use App\Models\Patient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -42,4 +43,43 @@ it('treats the escape character in the search as a literal character', function 
     $response->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.name', 'Joana!');
+});
+
+it('searches by health unit name', function () {
+    $unit = HealthUnit::factory()->create(['name' => 'UBS Messejana']);
+    Patient::factory()->create(['name' => 'Maria Silva', 'health_unit_id' => $unit->id]);
+    Patient::factory()->create(['name' => 'Joao Souza']);
+
+    $this->getJson('/api/patients?search=Messejana')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Maria Silva');
+});
+
+it('searches by cpf with or without mask', function () {
+    Patient::factory()->create(['name' => 'Maria Silva', 'cpf' => '52998224725']);
+    Patient::factory()->create(['name' => 'Joao Souza']);
+
+    $this->getJson('/api/patients?search=529.982.247-25')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Maria Silva');
+});
+
+it('searches by phone', function () {
+    Patient::factory()->create(['name' => 'Maria Silva', 'phone' => '85999887766']);
+    Patient::factory()->create(['name' => 'Joao Souza', 'phone' => '85911112222']);
+
+    $this->getJson('/api/patients?search=(85) 99988')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Maria Silva');
+});
+
+it('does not match digits from a non numeric search', function () {
+    Patient::factory()->create(['name' => 'Maria Silva', 'cpf' => '52998224725']);
+
+    $this->getJson('/api/patients?search='.urlencode('<script>alert(1)</script>'))
+        ->assertOk()
+        ->assertJsonCount(0, 'data');
 });
