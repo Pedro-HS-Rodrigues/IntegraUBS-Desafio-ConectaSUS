@@ -125,28 +125,10 @@ it('returns an empty list when no name matches the search', function () {
         ->assertJsonCount(0, 'data');
 });
 
-it('rejects a cpf with invalid check digits', function () {
-    $response = $this->postJson('/api/patients', patientPayload([
-        'cpf' => '52998224724',
-    ]));
-
-    $response->assertUnprocessable()
-        ->assertJsonValidationErrors('cpf')
-        ->assertJsonPath('errors.cpf.0', __('validation.cpf'));
-
-    $this->assertDatabaseCount('patients', 0);
-});
-
-it('rejects a cpf with invalid check digits when updating', function () {
-    $patient = Patient::factory()->create();
-
-    $response = $this->putJson("/api/patients/{$patient->id}", patientPayload([
-        'cpf' => '11111111111',
-        'health_unit_id' => $patient->health_unit_id,
-    ]));
-
-    $response->assertUnprocessable()
-        ->assertJsonValidationErrors('cpf');
+it('accepts any cpf with 11 digits', function () {
+    $this->postJson('/api/patients', patientPayload(['cpf' => '12345678901']))
+        ->assertCreated()
+        ->assertJsonPath('data.cpf', '12345678901');
 });
 
 it('deletes a patient', function () {
@@ -284,4 +266,17 @@ it('accepts a patient without phone', function () {
     $this->postJson('/api/patients', patientPayload(['phone' => null]))
         ->assertCreated()
         ->assertJsonPath('data.phone', null);
+});
+
+it('rejects html in the patient name and normalizes whitespace', function () {
+    $unit = HealthUnit::factory()->create();
+    $payload = ['cpf' => '52998224725', 'birth_date' => '1990-01-01', 'health_unit_id' => $unit->id];
+
+    $this->postJson('/api/patients', $payload + ['name' => '<img src=x>'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('name');
+
+    $this->postJson('/api/patients', $payload + ['name' => "Maria\t\n  Silva\0"])
+        ->assertCreated()
+        ->assertJsonPath('data.name', 'Maria Silva');
 });

@@ -111,7 +111,7 @@ Resposta `422` (erro de validação):
     "message": "O campo nome é obrigatório. (e mais 1 erro)",
     "errors": {
         "name": ["O campo nome é obrigatório."],
-        "cpf": ["O CPF informado é inválido."]
+        "cpf": ["O campo CPF deve ter 11 dígitos."]
     }
 }
 ```
@@ -121,7 +121,7 @@ Resposta `422` (erro de validação):
 | Campo            | Regra                                                              |
 | ---------------- | ------------------------------------------------------------------ |
 | `name`           | obrigatório, até 255 caracteres                                    |
-| `cpf`            | obrigatório, só os 11 números (sem pontos e traço), válido e único |
+| `cpf`            | obrigatório, só os 11 números e único                              |
 | `birth_date`     | obrigatória e não pode ser uma data futura                         |
 | `phone`          | opcional, só números com DDD (10 ou 11 dígitos)                    |
 | `health_unit_id` | obrigatório e precisa existir em `health_units`                    |
