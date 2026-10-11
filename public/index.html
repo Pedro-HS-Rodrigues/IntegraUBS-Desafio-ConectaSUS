@@ -33,9 +33,9 @@
         <h2 id="listTitle" class="panel-title">Pacientes</h2>
         <div class="list-tools">
           <div class="search-bar">
-            <label for="searchInput" class="sr-only">Buscar paciente por nome</label>
+            <label for="searchInput" class="sr-only">Buscar paciente por nome, unidade, CPF ou telefone</label>
             <span class="search-icon" aria-hidden="true"></span>
-            <input type="search" id="searchInput" class="search-input" placeholder="Buscar por nome" autocomplete="off">
+            <input type="search" id="searchInput" class="search-input" placeholder="Buscar paciente" autocomplete="off">
             <button type="button" id="searchClear" class="search-clear" aria-label="Limpar busca" hidden>&times;</button>
           </div>
           <button type="button" id="newPatientButton" class="btn btn-primary new-patient-button">+ Novo paciente</button>
@@ -71,7 +71,7 @@
       <div id="emptyState" class="list-state" hidden>
         <span class="state-icon" aria-hidden="true">?</span>
         <p class="state-title">Nenhum paciente encontrado</p>
-        <p class="state-text">Tente buscar por outro nome ou cadastre um novo paciente.</p>
+        <p class="state-text">Tente buscar por outro termo ou cadastre um novo paciente.</p>
       </div>
 
       <div id="errorState" class="list-state list-state-error" hidden>
