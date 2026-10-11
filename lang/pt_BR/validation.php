@@ -6,6 +6,7 @@ return [
     'integer' => 'O campo :attribute deve ser um número inteiro.',
     'date' => 'O campo :attribute deve ser uma data válida.',
     'digits' => 'O campo :attribute deve ter :digits dígitos.',
+    'digits_between' => 'O campo :attribute deve ter entre :min e :max dígitos.',
     'cpf' => 'O CPF informado é inválido.',
     'exists' => 'O valor informado para :attribute é inválido.',
     'unique' => 'O valor informado para :attribute já está em uso.',

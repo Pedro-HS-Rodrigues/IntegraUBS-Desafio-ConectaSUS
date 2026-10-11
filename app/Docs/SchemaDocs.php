@@ -38,9 +38,9 @@ use OpenApi\Attributes as OA;
             required: ['name', 'cpf', 'birth_date', 'health_unit_id'],
             properties: [
                 new OA\Property(property: 'name', type: 'string', maxLength: 255, example: 'Maria da Silva'),
-                new OA\Property(property: 'cpf', type: 'string', description: 'CPF válido (com os dígitos verificadores), com ou sem máscara. A API guarda só os 11 dígitos.', example: '529.982.247-25'),
+                new OA\Property(property: 'cpf', type: 'string', description: 'CPF válido, somente os 11 dígitos, sem máscara.', example: '52998224725'),
                 new OA\Property(property: 'birth_date', type: 'string', format: 'date', description: 'Não pode ser uma data futura.', example: '1985-03-10'),
-                new OA\Property(property: 'phone', type: 'string', nullable: true, maxLength: 20, description: 'Opcional. Com ou sem máscara.', example: '(85) 98888-7777'),
+                new OA\Property(property: 'phone', type: 'string', nullable: true, description: 'Opcional. Somente os 10 ou 11 dígitos (DDD e número), sem máscara.', example: '85988887777'),
                 new OA\Property(property: 'health_unit_id', type: 'integer', description: 'ID de uma unidade de saúde existente.', example: 1),
             ],
         ),

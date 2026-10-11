@@ -80,7 +80,7 @@ class PatientDocs
         path: '/api/patients/{patient}',
         operationId: 'updatePatient',
         summary: 'Atualiza um paciente',
-        description: 'Todos os campos obrigatórios devem ser enviados. O CPF do próprio paciente pode ser mantido.',
+        description: 'Os campos enviados são validados e atualizados; os omitidos permanecem como estão. O CPF do próprio paciente pode ser mantido.',
         tags: ['Pacientes'],
         parameters: [new OA\Parameter(ref: '#/components/parameters/PatientId')],
         requestBody: new OA\RequestBody(

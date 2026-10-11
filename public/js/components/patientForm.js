@@ -120,9 +120,9 @@ export function showFieldErrors(errors) {
 function getFormData() {
     return {
         name: fields.name.input.value.trim(),
-        cpf: fields.cpf.input.value,
+        cpf: fields.cpf.input.value.replace(/\D/g, ''),
         birth_date: fields.birth_date.input.value,
-        phone: fields.phone.input.value,
+        phone: fields.phone.input.value.replace(/\D/g, ''),
         health_unit_id: fields.health_unit_id.input.value,
     };
 }
