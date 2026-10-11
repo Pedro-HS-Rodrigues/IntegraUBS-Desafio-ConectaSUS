@@ -12,7 +12,7 @@ it('generates the documentation with every endpoint of the api', function () {
 
     $response->assertOk()
         ->assertJsonPath('info.title', 'IntegraUBS API')
-        ->assertJsonStructure(['paths' => ['/api/patients', '/api/patients/{patient}', '/api/health-units']]);
+        ->assertJsonStructure(['paths' => ['/api/patients', '/api/patients/{id}', '/api/health-units']]);
 
     $operations = collect($response->json('paths'))
         ->flatMap(fn (array $path) => array_keys($path));

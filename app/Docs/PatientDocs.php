@@ -10,10 +10,10 @@ class PatientDocs
         path: '/api/patients',
         operationId: 'listPatients',
         summary: 'Lista os pacientes',
-        description: 'Retorna os pacientes paginados de 10 em 10, ordenados por nome. O parâmetro search filtra pelo nome (busca parcial).',
+        description: 'Retorna os pacientes paginados de 10 em 10, ordenados por nome. O parâmetro search filtra por nome, unidade de saúde, CPF ou telefone (busca parcial).',
         tags: ['Pacientes'],
         parameters: [
-            new OA\Parameter(name: 'search', in: 'query', required: false, description: 'Parte do nome do paciente.', schema: new OA\Schema(type: 'string', example: 'Maria')),
+            new OA\Parameter(name: 'search', in: 'query', required: false, description: 'Parte do nome, da unidade de saúde, do CPF ou do telefone.', schema: new OA\Schema(type: 'string', example: 'Maria')),
             new OA\Parameter(name: 'page', in: 'query', required: false, description: 'Número da página.', schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)),
         ],
         responses: [
@@ -58,7 +58,7 @@ class PatientDocs
     public function store(): void {}
 
     #[OA\Get(
-        path: '/api/patients/{patient}',
+        path: '/api/patients/{id}',
         operationId: 'showPatient',
         summary: 'Consulta um paciente',
         tags: ['Pacientes'],
@@ -77,7 +77,7 @@ class PatientDocs
     public function show(): void {}
 
     #[OA\Put(
-        path: '/api/patients/{patient}',
+        path: '/api/patients/{id}',
         operationId: 'updatePatient',
         summary: 'Atualiza um paciente',
         description: 'Os campos enviados são validados e atualizados; os omitidos permanecem como estão. O CPF do próprio paciente pode ser mantido.',
@@ -105,7 +105,7 @@ class PatientDocs
     public function update(): void {}
 
     #[OA\Delete(
-        path: '/api/patients/{patient}',
+        path: '/api/patients/{id}',
         operationId: 'deletePatient',
         summary: 'Exclui um paciente',
         tags: ['Pacientes'],
