@@ -20,5 +20,6 @@ return [
         'birth_date' => 'data de nascimento',
         'phone' => 'telefone',
         'health_unit_id' => 'unidade de saúde',
+        'search' => 'busca',
     ],
 ];

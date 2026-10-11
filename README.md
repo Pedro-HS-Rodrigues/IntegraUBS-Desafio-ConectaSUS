@@ -18,9 +18,7 @@ Aplicação web para **cadastrar e consultar pacientes vinculados a unidades de 
 - [Arquitetura e decisões técnicas](#arquitetura-e-decisões-técnicas)
 - [Testes e qualidade](#testes-e-qualidade)
 - [O que está funcionando](#o-que-está-funcionando)
-- [O que ficou incompleto e próximos passos](#o-que-ficou-incompleto-e-próximos-passos)
 - [Capturas de tela](#capturas-de-tela)
-- [Créditos](#créditos)
 
 ## Funcionalidades
 

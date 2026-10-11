@@ -5,6 +5,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+it('rejects a search sent as an array', function () {
+    $this->getJson('/api/patients?search[]=maria')
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('search');
+});
+
 it('treats the percent sign in the search as a literal character', function () {
     Patient::factory()->create(['name' => 'Maria Silva']);
     Patient::factory()->create(['name' => 'Joao 100% Silva']);
