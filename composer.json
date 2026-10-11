@@ -1,16 +1,17 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "pedrohenrique/conectasus-pacientes",
+    "name": "pedrohenrique/integraubs-pacientes",
     "type": "project",
-    "description": "Desafio ConectaSUS: cadastro de pacientes vinculados a unidades de saúde (Laravel + JavaScript puro).",
+    "description": "IntegraUBS: cadastro de pacientes vinculados a unidades de saúde (Laravel + JavaScript puro).",
     "keywords": [
         "laravel",
-        "conectasus",
+        "integraubs",
         "desafio"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.4",
+        "darkaonline/l5-swagger": "^11.1",
         "laravel/framework": "^13.17",
         "laravel/tinker": "^3.0"
     },
@@ -46,6 +47,12 @@
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
+        ],
+        "lint": [
+            "pint --test"
+        ],
+        "format": [
+            "pint"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
