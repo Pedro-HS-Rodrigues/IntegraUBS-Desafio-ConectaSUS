@@ -28,6 +28,7 @@ class PatientDocs
                     ],
                 ),
             ),
+            new OA\Response(response: 422, description: 'Busca ou página inválida (a página deve ser um número inteiro a partir de 1).', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ],
     )]
     public function index(): void {}
@@ -80,7 +81,7 @@ class PatientDocs
         path: '/api/patients/{id}',
         operationId: 'updatePatient',
         summary: 'Atualiza um paciente',
-        description: 'Os campos enviados são validados e atualizados; os omitidos permanecem como estão. O CPF do próprio paciente pode ser mantido.',
+        description: 'Substitui os dados do paciente: todos os campos obrigatórios devem ser enviados. O CPF do próprio paciente pode ser mantido.',
         tags: ['Pacientes'],
         parameters: [new OA\Parameter(ref: '#/components/parameters/PatientId')],
         requestBody: new OA\RequestBody(
@@ -99,10 +100,38 @@ class PatientDocs
                 ),
             ),
             new OA\Response(response: 404, description: 'Paciente não encontrado.', content: new OA\JsonContent(ref: '#/components/schemas/Message')),
-            new OA\Response(response: 422, description: 'Dados inválidos ou CPF já cadastrado em outro paciente.', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+            new OA\Response(response: 422, description: 'Campo obrigatório ausente, dados inválidos ou CPF já cadastrado em outro paciente.', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ],
     )]
     public function update(): void {}
+
+    #[OA\Patch(
+        path: '/api/patients/{id}',
+        operationId: 'partiallyUpdatePatient',
+        summary: 'Atualiza parte de um paciente',
+        description: 'Os campos enviados são validados e atualizados; os omitidos permanecem como estão. O CPF do próprio paciente pode ser mantido.',
+        tags: ['Pacientes'],
+        parameters: [new OA\Parameter(ref: '#/components/parameters/PatientId')],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/PatientUpdateRequest'),
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paciente atualizado.',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/Patient'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Paciente atualizado com sucesso.'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 404, description: 'Paciente não encontrado.', content: new OA\JsonContent(ref: '#/components/schemas/Message')),
+            new OA\Response(response: 422, description: 'Dados inválidos ou CPF já cadastrado em outro paciente.', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
+        ],
+    )]
+    public function partialUpdate(): void {}
 
     #[OA\Delete(
         path: '/api/patients/{id}',

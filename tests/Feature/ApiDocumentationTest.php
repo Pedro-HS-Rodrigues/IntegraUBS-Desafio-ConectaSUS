@@ -17,5 +17,5 @@ it('generates the documentation with every endpoint of the api', function () {
     $operations = collect($response->json('paths'))
         ->flatMap(fn (array $path) => array_keys($path));
 
-    expect($operations)->toHaveCount(6);
+    expect($operations)->toHaveCount(7);
 });
