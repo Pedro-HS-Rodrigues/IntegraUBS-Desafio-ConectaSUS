@@ -25,7 +25,7 @@ export function initPatientForm(onSubmit) {
     closeFormButton.addEventListener('click', closePatientForm);
     patientDialog.addEventListener('close', clearFieldErrors);
     patientDialog.addEventListener('click', (event) => {
-        if (isOutsideDialog(event, patientDialog)) {
+        if (isOutsideDialog(event, patientDialog) && !submitButton.disabled) {
             closePatientForm();
         }
     });
