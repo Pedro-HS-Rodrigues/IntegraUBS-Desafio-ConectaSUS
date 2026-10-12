@@ -75,10 +75,11 @@ A documentação da API (Swagger) está em <http://localhost:8000/api/documentat
 
 | Método        | Rota                 | O que faz                                     | Respostas     |
 | ------------- | -------------------- | --------------------------------------------- | ------------- |
-| `GET`         | `/api/patients`      | Lista pacientes. Aceita `?search=` e `?page=` | 200           |
+| `GET`         | `/api/patients`      | Lista pacientes. Aceita `?search=` e `?page=` | 200, 422      |
 | `POST`        | `/api/patients`      | Cadastra um paciente                          | 201, 422      |
 | `GET`         | `/api/patients/{id}` | Consulta um paciente                          | 200, 404      |
-| `PUT`/`PATCH` | `/api/patients/{id}` | Atualiza um paciente                          | 200, 404, 422 |
+| `PUT`         | `/api/patients/{id}` | Atualiza um paciente (todos os campos)        | 200, 404, 422 |
+| `PATCH`       | `/api/patients/{id}` | Atualiza só os campos enviados                | 200, 404, 422 |
 | `DELETE`      | `/api/patients/{id}` | Exclui um paciente                            | 200, 404      |
 | `GET`         | `/api/health-units`  | Lista as unidades de saúde                    | 200           |
 
@@ -170,7 +171,7 @@ As consultas pedidas no desafio estão em `sql/consultas.sql`:
 php artisan test
 ```
 
-São 48 testes. Eles usam SQLite em memória, então não mexem no seu banco.
+São 52 testes. Eles usam SQLite em memória, então não mexem no seu banco.
 
 ## O que está funcionando
 
