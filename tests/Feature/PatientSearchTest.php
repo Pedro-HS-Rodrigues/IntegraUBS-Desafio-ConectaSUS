@@ -76,6 +76,16 @@ it('searches by phone', function () {
         ->assertJsonPath('data.0.name', 'Maria Silva');
 });
 
+it('searches by the digit zero', function () {
+    Patient::factory()->create(['name' => 'Maria Silva', 'cpf' => '01234567890', 'phone' => null]);
+    Patient::factory()->create(['name' => 'Joao Souza', 'cpf' => '11111111111', 'phone' => null]);
+
+    $this->getJson('/api/patients?search=0')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'Maria Silva');
+});
+
 it('does not match digits from a non numeric search', function () {
     Patient::factory()->create(['name' => 'Maria Silva', 'cpf' => '52998224725']);
 
