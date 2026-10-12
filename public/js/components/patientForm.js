@@ -1,3 +1,4 @@
+import { isOutsideDialog } from '../utils/dialog.js';
 import { formatCpf, formatPhone } from '../utils/formatters.js';
 
 const patientDialog = document.getElementById('patientDialog');
@@ -23,6 +24,11 @@ export function initPatientForm(onSubmit) {
     cancelButton.addEventListener('click', closePatientForm);
     closeFormButton.addEventListener('click', closePatientForm);
     patientDialog.addEventListener('close', clearFieldErrors);
+    patientDialog.addEventListener('click', (event) => {
+        if (isOutsideDialog(event, patientDialog) && !submitButton.disabled) {
+            closePatientForm();
+        }
+    });
 
     patientForm.addEventListener('submit', (event) => {
         event.preventDefault();

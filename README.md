@@ -23,8 +23,21 @@ O backend é uma API em Laravel que responde em JSON. O frontend é HTML, CSS e 
 
 1. Clone o repositório e instale as dependências:
 
+Por HTTPS:
+
+```bash
+git clone https://github.com/Pedro-HS-Rodrigues/IntegraUBS-Desafio-ConectaSUS.git
+```
+
+Ou por SSH, se você tiver uma chave SSH cadastrada no GitHub:
+
 ```bash
 git clone git@github.com:Pedro-HS-Rodrigues/IntegraUBS-Desafio-ConectaSUS.git
+```
+
+Depois:
+
+```bash
 cd IntegraUBS-Desafio-ConectaSUS
 composer install
 ```
@@ -111,7 +124,7 @@ Resposta `422` (erro de validação):
     "message": "O campo nome é obrigatório. (e mais 1 erro)",
     "errors": {
         "name": ["O campo nome é obrigatório."],
-        "cpf": ["O CPF informado é inválido."]
+        "cpf": ["O campo CPF deve ter 11 dígitos."]
     }
 }
 ```
@@ -121,7 +134,7 @@ Resposta `422` (erro de validação):
 | Campo            | Regra                                                              |
 | ---------------- | ------------------------------------------------------------------ |
 | `name`           | obrigatório, até 255 caracteres                                    |
-| `cpf`            | obrigatório, só os 11 números (sem pontos e traço), válido e único |
+| `cpf`            | obrigatório, só os 11 números e único                              |
 | `birth_date`     | obrigatória e não pode ser uma data futura                         |
 | `phone`          | opcional, só números com DDD (10 ou 11 dígitos)                    |
 | `health_unit_id` | obrigatório e precisa existir em `health_units`                    |
@@ -141,12 +154,6 @@ As consultas pedidas no desafio estão em `sql/consultas.sql`:
 2. total de pacientes por unidade, inclusive as que não têm paciente (`LEFT JOIN` com `GROUP BY`);
 3. pacientes cujo nome contém um termo (`LIKE`).
 
-Para executar no terminal:
-
-```bash
-mysql -u root -p integraubs < sql/consultas.sql
-```
-
 ## Como o código está organizado
 
 - `routes/api.php`: rotas da API.
@@ -163,7 +170,7 @@ mysql -u root -p integraubs < sql/consultas.sql
 php artisan test
 ```
 
-São 46 testes. Eles usam SQLite em memória, então não mexem no seu banco.
+São 48 testes. Eles usam SQLite em memória, então não mexem no seu banco.
 
 ## O que está funcionando
 

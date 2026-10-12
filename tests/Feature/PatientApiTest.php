@@ -54,6 +54,19 @@ it('rejects a future birth date', function () {
     $this->assertDatabaseCount('patients', 0);
 });
 
+it('rejects a birth date that is not in the Y-m-d format', function (string $birthDate) {
+    $response = $this->postJson('/api/patients', patientPayload(['birth_date' => $birthDate]));
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors('birth_date');
+
+    $this->assertDatabaseCount('patients', 0);
+})->with([
+    'day and month with slashes' => '10/05/1990',
+    'with time' => '1990-05-10 10:00:00',
+    'invalid day' => '1990-02-30',
+]);
+
 it('rejects a health unit that does not exist', function () {
     $response = $this->postJson('/api/patients', patientPayload([
         'health_unit_id' => 9999,
@@ -76,6 +89,13 @@ it('returns a generic 404 message when the api route does not exist', function (
     $this->getJson('/api/unknown')
         ->assertNotFound()
         ->assertJsonPath('message', __('patients.route_not_found'));
+});
+
+it('returns a portuguese message when the http method is not allowed', function () {
+    $this->postJson('/api/patients/1')
+        ->assertMethodNotAllowed()
+        ->assertHeader('Allow', 'GET, HEAD, PUT, PATCH, DELETE')
+        ->assertJsonPath('message', __('patients.method_not_allowed'));
 });
 
 it('translates the validation summary to portuguese', function () {
@@ -125,28 +145,10 @@ it('returns an empty list when no name matches the search', function () {
         ->assertJsonCount(0, 'data');
 });
 
-it('rejects a cpf with invalid check digits', function () {
-    $response = $this->postJson('/api/patients', patientPayload([
-        'cpf' => '52998224724',
-    ]));
-
-    $response->assertUnprocessable()
-        ->assertJsonValidationErrors('cpf')
-        ->assertJsonPath('errors.cpf.0', __('validation.cpf'));
-
-    $this->assertDatabaseCount('patients', 0);
-});
-
-it('rejects a cpf with invalid check digits when updating', function () {
-    $patient = Patient::factory()->create();
-
-    $response = $this->putJson("/api/patients/{$patient->id}", patientPayload([
-        'cpf' => '11111111111',
-        'health_unit_id' => $patient->health_unit_id,
-    ]));
-
-    $response->assertUnprocessable()
-        ->assertJsonValidationErrors('cpf');
+it('accepts any cpf with 11 digits', function () {
+    $this->postJson('/api/patients', patientPayload(['cpf' => '12345678901']))
+        ->assertCreated()
+        ->assertJsonPath('data.cpf', '12345678901');
 });
 
 it('deletes a patient', function () {
@@ -172,6 +174,16 @@ it('returns 404 when updating a patient that does not exist', function () {
 
     $response->assertNotFound()
         ->assertJsonPath('message', __('patients.not_found'));
+});
+
+it('does not accept a patient id that is not a number', function () {
+    $patient = Patient::factory()->create();
+
+    $this->deleteJson("/api/patients/{$patient->id}abc")
+        ->assertNotFound()
+        ->assertJsonPath('message', __('patients.route_not_found'));
+
+    $this->assertDatabaseHas('patients', ['id' => $patient->id]);
 });
 
 it('rejects the cpf of another patient when updating', function () {
@@ -284,4 +296,17 @@ it('accepts a patient without phone', function () {
     $this->postJson('/api/patients', patientPayload(['phone' => null]))
         ->assertCreated()
         ->assertJsonPath('data.phone', null);
+});
+
+it('rejects html in the patient name and normalizes whitespace', function () {
+    $unit = HealthUnit::factory()->create();
+    $payload = ['cpf' => '52998224725', 'birth_date' => '1990-01-01', 'health_unit_id' => $unit->id];
+
+    $this->postJson('/api/patients', $payload + ['name' => '<img src=x>'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('name');
+
+    $this->postJson('/api/patients', $payload + ['name' => "Maria\t\n  Silva\0"])
+        ->assertCreated()
+        ->assertJsonPath('data.name', 'Maria Silva');
 });

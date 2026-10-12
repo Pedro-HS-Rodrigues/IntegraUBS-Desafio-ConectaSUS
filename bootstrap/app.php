@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -27,6 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 $key = $e->getPrevious() instanceof ModelNotFoundException ? 'patients.not_found' : 'patients.route_not_found';
 
                 return response()->json(['message' => __($key)], 404);
+            }
+        });
+
+        $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => __('patients.method_not_allowed')], 405, $e->getHeaders());
             }
         });
     })->create();
