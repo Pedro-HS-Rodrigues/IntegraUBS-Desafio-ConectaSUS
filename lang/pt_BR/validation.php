@@ -4,7 +4,7 @@ return [
     'required' => 'O campo :attribute é obrigatório.',
     'string' => 'O campo :attribute deve ser um texto.',
     'integer' => 'O campo :attribute deve ser um número inteiro.',
-    'date' => 'O campo :attribute deve ser uma data válida.',
+    'date_format' => 'O campo :attribute deve ser uma data no formato :format.',
     'digits' => 'O campo :attribute deve ter :digits dígitos.',
     'digits_between' => 'O campo :attribute deve ter entre :min e :max dígitos.',
     'not_regex' => 'O campo :attribute contém caracteres inválidos.',

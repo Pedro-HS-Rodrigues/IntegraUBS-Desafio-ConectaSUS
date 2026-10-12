@@ -26,7 +26,7 @@ class StorePatientRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255', 'not_regex:/[<>]/'],
             'cpf' => ['bail', 'required', 'digits:11', Rule::unique('patients', 'cpf')],
-            'birth_date' => ['required', 'date', 'before_or_equal:today'],
+            'birth_date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'phone' => ['nullable', 'digits_between:10,11'],
             'health_unit_id' => ['required', 'integer', 'exists:health_units,id'],
         ];
