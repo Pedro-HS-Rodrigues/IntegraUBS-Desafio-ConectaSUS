@@ -232,6 +232,16 @@ it('paginates the list in pages of ten', function () {
         ->assertJsonPath('links.next', null);
 });
 
+it('rejects an invalid page', function (string $page, string $message) {
+    $this->getJson("/api/patients?page={$page}")
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.page.0', $message);
+})->with([
+    'zero' => ['0', 'O campo página deve ser no mínimo 1.'],
+    'negative' => ['-1', 'O campo página deve ser no mínimo 1.'],
+    'text' => ['abc', 'O campo página deve ser um número inteiro.'],
+]);
+
 it('lists the patients ordered by name', function () {
     Patient::factory()->create(['name' => 'Carla']);
     Patient::factory()->create(['name' => 'Ana']);
@@ -276,6 +286,16 @@ it('still validates the fields sent in a patch', function () {
     $this->patchJson("/api/patients/{$patient->id}", ['name' => ''])
         ->assertUnprocessable()
         ->assertJsonValidationErrors('name');
+});
+
+it('requires every mandatory field when updating with put', function () {
+    $patient = Patient::factory()->create(['name' => 'Nome Original']);
+
+    $this->putJson("/api/patients/{$patient->id}", [])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['name', 'cpf', 'birth_date', 'health_unit_id']);
+
+    $this->assertDatabaseHas('patients', ['id' => $patient->id, 'name' => 'Nome Original']);
 });
 
 it('rejects a phone with mask, letters or wrong size', function (string $phone) {
