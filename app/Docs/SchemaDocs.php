@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
             schema: 'HealthUnit',
             properties: [
                 new OA\Property(property: 'id', type: 'integer', example: 1),
-                new OA\Property(property: 'name', type: 'string', example: 'UBS Centro'),
+                new OA\Property(property: 'name', type: 'string', example: 'Posto de Saúde Centro'),
                 new OA\Property(property: 'city', type: 'string', example: 'Fortaleza'),
             ],
         ),
@@ -18,7 +18,7 @@ use OpenApi\Attributes as OA;
             schema: 'PatientSummaryHealthUnit',
             properties: [
                 new OA\Property(property: 'id', type: 'integer', example: 1),
-                new OA\Property(property: 'name', type: 'string', example: 'UBS Centro'),
+                new OA\Property(property: 'name', type: 'string', example: 'Posto de Saúde Centro'),
             ],
         ),
         new OA\Schema(
@@ -36,6 +36,16 @@ use OpenApi\Attributes as OA;
         new OA\Schema(
             schema: 'PatientRequest',
             required: ['name', 'cpf', 'birth_date', 'health_unit_id'],
+            properties: [
+                new OA\Property(property: 'name', type: 'string', maxLength: 255, example: 'Maria da Silva'),
+                new OA\Property(property: 'cpf', type: 'string', description: 'Somente os 11 dígitos, sem máscara.', example: '52998224725'),
+                new OA\Property(property: 'birth_date', type: 'string', format: 'date', description: 'Não pode ser uma data futura.', example: '1985-03-10'),
+                new OA\Property(property: 'phone', type: 'string', nullable: true, description: 'Opcional. Somente os 10 ou 11 dígitos (DDD e número), sem máscara.', example: '85988887777'),
+                new OA\Property(property: 'health_unit_id', type: 'integer', description: 'ID de uma unidade de saúde existente.', example: 1),
+            ],
+        ),
+        new OA\Schema(
+            schema: 'PatientUpdateRequest',
             properties: [
                 new OA\Property(property: 'name', type: 'string', maxLength: 255, example: 'Maria da Silva'),
                 new OA\Property(property: 'cpf', type: 'string', description: 'Somente os 11 dígitos, sem máscara.', example: '52998224725'),
@@ -86,7 +96,7 @@ use OpenApi\Attributes as OA;
         new OA\Schema(
             schema: 'ValidationError',
             properties: [
-                new OA\Property(property: 'message', type: 'string', example: 'O campo nome é obrigatório. (and 1 more error)'),
+                new OA\Property(property: 'message', type: 'string', example: 'O campo nome é obrigatório. (e mais 1 erro)'),
                 new OA\Property(
                     property: 'errors',
                     type: 'object',

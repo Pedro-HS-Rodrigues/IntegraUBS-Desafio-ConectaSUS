@@ -18,7 +18,10 @@ class PatientController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $validated = $request->validate(['search' => ['nullable', 'string']]);
+        $validated = $request->validate([
+            'search' => ['nullable', 'string'],
+            'page' => ['nullable', 'integer', 'min:1'],
+        ]);
 
         $patients = $this->patientService->list($validated['search'] ?? null);
 

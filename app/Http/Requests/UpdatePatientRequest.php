@@ -23,12 +23,14 @@ class UpdatePatientRequest extends FormRequest
 
     public function rules(): array
     {
+        $presenceRules = $this->isMethod('PATCH') ? ['sometimes', 'required'] : ['required'];
+
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255', 'not_regex:/[<>]/'],
-            'cpf' => ['sometimes', 'bail', 'required', 'digits:11', Rule::unique('patients', 'cpf')->ignore($this->route('patient'))],
-            'birth_date' => ['sometimes', 'required', 'date_format:Y-m-d', 'before_or_equal:today'],
+            'name' => [...$presenceRules, 'string', 'max:255', 'not_regex:/[<>]/'],
+            'cpf' => ['bail', ...$presenceRules, 'digits:11', Rule::unique('patients', 'cpf')->ignore($this->route('patient'))],
+            'birth_date' => [...$presenceRules, 'date_format:Y-m-d', 'before_or_equal:today'],
             'phone' => ['nullable', 'digits_between:10,11'],
-            'health_unit_id' => ['sometimes', 'required', 'integer', 'exists:health_units,id'],
+            'health_unit_id' => [...$presenceRules, 'integer', 'exists:health_units,id'],
         ];
     }
 

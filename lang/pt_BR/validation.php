@@ -14,6 +14,9 @@ return [
     'max' => [
         'string' => 'O campo :attribute não pode ter mais de :max caracteres.',
     ],
+    'min' => [
+        'numeric' => 'O campo :attribute deve ser no mínimo :min.',
+    ],
 
     'attributes' => [
         'name' => 'nome',
@@ -22,5 +25,6 @@ return [
         'phone' => 'telefone',
         'health_unit_id' => 'unidade de saúde',
         'search' => 'busca',
+        'page' => 'página',
     ],
 ];
