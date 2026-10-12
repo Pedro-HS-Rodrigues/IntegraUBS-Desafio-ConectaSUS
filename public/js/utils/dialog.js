@@ -1,4 +1,8 @@
 export function isOutsideDialog(event, dialog) {
+    if (event.target !== dialog) {
+        return false;
+    }
+
     const rect = dialog.getBoundingClientRect();
 
     return (
