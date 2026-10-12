@@ -26,7 +26,7 @@ class UpdatePatientRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255', 'not_regex:/[<>]/'],
             'cpf' => ['sometimes', 'bail', 'required', 'digits:11', Rule::unique('patients', 'cpf')->ignore($this->route('patient'))],
-            'birth_date' => ['sometimes', 'required', 'date', 'before_or_equal:today'],
+            'birth_date' => ['sometimes', 'required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'phone' => ['nullable', 'digits_between:10,11'],
             'health_unit_id' => ['sometimes', 'required', 'integer', 'exists:health_units,id'],
         ];

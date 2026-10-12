@@ -11,7 +11,7 @@ class PatientService
     public function list(?string $search): LengthAwarePaginator
     {
         return Patient::with('healthUnit')
-            ->when($search, fn ($query) => $this->applySearch($query, $search))
+            ->when(filled($search), fn ($query) => $this->applySearch($query, $search))
             ->orderBy('name')
             ->paginate(10)
             ->withQueryString();
